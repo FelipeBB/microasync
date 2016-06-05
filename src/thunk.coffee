@@ -10,7 +10,7 @@ thunk = (fn, params...) ->
     error = err
 
   return (callback) ->
-    return callback error if error and cb
+    return callback error if error
     callback null, response if response
     cb = callback
 

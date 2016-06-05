@@ -1,3 +1,4 @@
+once = require './lib/once'
 thunk = require './thunk'
 
 map = (arr, fn) ->
@@ -5,9 +6,7 @@ map = (arr, fn) ->
   response = []
 
   resolve = (err, value) ->
-    if err and cb
-      cb err
-      return cb = null
+    cb err if err and cb
 
     response.push(value)
     if response.length is arr.length and cb
@@ -16,6 +15,7 @@ map = (arr, fn) ->
   (thunk(fn, item)(resolve) for item in arr)
 
   return (callback) ->
+    callback = once callback
     callback null, response if response.length is arr.length
     cb = callback
 
