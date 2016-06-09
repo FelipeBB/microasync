@@ -1,22 +1,16 @@
 once = require './lib/once'
 thunk = require './thunk'
 
-map = (arr, fn) ->
-  cb = null
+map = (arr, fn, callback) ->
+  callback = once callback
   response = []
   resolveCounter = arr.length
 
   for item, index in arr
     do (index) ->
       thunk(fn, item) (err, value) ->
-        cb err if err and cb
+        callback err if err
         response[index] = value
-        cb null, response if not --resolveCounter and cb
-
-
-  return (callback) ->
-    callback = once callback
-    callback null, response if response.length is arr.length
-    cb = callback
+        callback null, response if not --resolveCounter
 
 module.exports = map
