@@ -43,21 +43,24 @@ once = require('./lib/once');
 thunk = require('./thunk');
 
 map = function(arr, fn) {
-  var cb, i, item, len, resolve, response;
+  var cb, fn1, i, index, item, len, resolveCounter, response;
   cb = null;
   response = [];
-  resolve = function(err, value) {
-    if (err && cb) {
-      cb(err);
-    }
-    response.push(value);
-    if (response.length === arr.length && cb) {
-      return cb(null, response);
-    }
+  resolveCounter = arr.length;
+  fn1 = function(index) {
+    return thunk(fn, item)(function(err, value) {
+      if (err && cb) {
+        cb(err);
+      }
+      response[index] = value;
+      if (!--resolveCounter && cb) {
+        return cb(null, response);
+      }
+    });
   };
-  for (i = 0, len = arr.length; i < len; i++) {
-    item = arr[i];
-    thunk(fn, item)(resolve);
+  for (index = i = 0, len = arr.length; i < len; index = ++i) {
+    item = arr[index];
+    fn1(index);
   }
   return function(callback) {
     callback = once(callback);

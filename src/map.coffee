@@ -4,15 +4,15 @@ thunk = require './thunk'
 map = (arr, fn) ->
   cb = null
   response = []
+  resolveCounter = arr.length
 
-  resolve = (err, value) ->
-    cb err if err and cb
+  for item, index in arr
+    do (index) ->
+      thunk(fn, item) (err, value) ->
+        cb err if err and cb
+        response[index] = value
+        cb null, response if not --resolveCounter and cb
 
-    response.push(value)
-    if response.length is arr.length and cb
-      cb null, response
-
-  (thunk(fn, item)(resolve) for item in arr)
 
   return (callback) ->
     callback = once callback
