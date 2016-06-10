@@ -20,22 +20,25 @@ module.exports = once;
 
 
 },{}],2:[function(require,module,exports){
-var map, microasync, thunk;
+var map, microasync, parallel, thunk;
 
 thunk = require('./thunk');
 
 map = require('./map');
 
+parallel = require('./parallel');
+
 microasync = {
   thunk: thunk,
-  map: map
+  map: map,
+  parallel: parallel
 };
 
 module.exports = microasync;
 
 
 
-},{"./map":3,"./thunk":4}],3:[function(require,module,exports){
+},{"./map":3,"./parallel":4,"./thunk":5}],3:[function(require,module,exports){
 var map, once, thunk;
 
 once = require('./lib/once');
@@ -69,7 +72,38 @@ module.exports = map;
 
 
 
-},{"./lib/once":1,"./thunk":4}],4:[function(require,module,exports){
+},{"./lib/once":1,"./thunk":5}],4:[function(require,module,exports){
+var once, parallel, thunk;
+
+once = require('./lib/once');
+
+thunk = require('./thunk');
+
+parallel = function(functions, callback) {
+  var fn, i, len, resolve, resolveCounter, response;
+  callback = once(callback);
+  response = [];
+  resolveCounter = functions.length;
+  for (i = 0, len = functions.length; i < len; i++) {
+    fn = functions[i];
+    thunk(fn)(resolve);
+  }
+  return resolve = function(err, value) {
+    if (err) {
+      callback(err);
+    }
+    response.push(value);
+    if (!--resolveCounter) {
+      return callback(null, response);
+    }
+  };
+};
+
+module.exports = parallel;
+
+
+
+},{"./lib/once":1,"./thunk":5}],5:[function(require,module,exports){
 var thunk,
   slice = [].slice;
 
