@@ -1,6 +1,7 @@
 thunk = require './thunk'
 map = require './map'
 filter = require './filter'
+each = require './each'
 parallel = require './parallel'
 
 microasync =
@@ -8,5 +9,6 @@ microasync =
   map: map
   parallel: parallel
   filter: filter
+  each: each
 
 module.exports = microasync
