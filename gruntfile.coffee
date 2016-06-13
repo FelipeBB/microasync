@@ -1,6 +1,4 @@
-
 module.exports = (grunt) ->
-
   grunt.initConfig
 
     pkg: grunt.file.readJSON 'package.json'
@@ -56,6 +54,14 @@ module.exports = (grunt) ->
         src: 'microasync.js'
         dest: 'dist'
 
+    uglify:
+      options:
+        mangle: false
+      dist:
+        files:
+          'dist/microasync.min.js': ['dist/microasync.js']
+
+
     browserify:
       options:
         browserifyOptions:
@@ -65,16 +71,15 @@ module.exports = (grunt) ->
         dest: 'target/src/microasync.js'
 
   require('load-grunt-tasks')(grunt)
-  grunt.loadNpmTasks('grunt-browserify')
 
-  grunt.registerTask 'default', [ 'validate', 'compile' ]
+  grunt.registerTask 'default', ['validate', 'compile']
 
-  grunt.registerTask 'validate', [ 'coffeelint:build', 'coffeelint:main', 'coffeelint:test', 'coffeelint:examples' ]
+  grunt.registerTask 'validate', ['coffeelint:build', 'coffeelint:main', 'coffeelint:test', 'coffeelint:examples']
 
-  grunt.registerTask 'compile', [ 'clean:main', 'coffee:main', 'browserify:main' ]
+  grunt.registerTask 'compile', ['clean:main', 'coffee:main', 'browserify:main']
 
-  grunt.registerTask 'test-compile', [ 'clean:test', 'coffee:test', 'coffee:examples' ]
+  grunt.registerTask 'test-compile', ['clean:test', 'coffee:test', 'coffee:examples']
 
-  grunt.registerTask 'test', [ 'validate', 'compile', 'test-compile', 'mochaTest' ]
+  grunt.registerTask 'test', ['validate', 'compile', 'test-compile', 'mochaTest']
 
-  grunt.registerTask 'release', [ 'test', 'copy:dist', 'clean:target']
+  grunt.registerTask 'release', ['test', 'copy:dist', 'clean:target', 'uglify:dist']
