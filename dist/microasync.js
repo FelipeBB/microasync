@@ -24,7 +24,7 @@ module.exports = each;
 
 
 
-},{"./thunk":7}],2:[function(require,module,exports){
+},{"./thunk":8}],2:[function(require,module,exports){
 var filter, once, thunk;
 
 once = require('./lib/once');
@@ -63,7 +63,7 @@ module.exports = filter;
 
 
 
-},{"./lib/once":3,"./thunk":7}],3:[function(require,module,exports){
+},{"./lib/once":3,"./thunk":8}],3:[function(require,module,exports){
 var once,
   slice = [].slice;
 
@@ -85,7 +85,7 @@ module.exports = once;
 
 
 },{}],4:[function(require,module,exports){
-var each, filter, map, microasync, parallel, thunk;
+var each, filter, map, microasync, parallel, series, thunk;
 
 thunk = require('./thunk');
 
@@ -97,19 +97,22 @@ each = require('./each');
 
 parallel = require('./parallel');
 
+series = require('./series');
+
 microasync = {
   thunk: thunk,
   map: map,
   parallel: parallel,
   filter: filter,
-  each: each
+  each: each,
+  series: series
 };
 
 module.exports = microasync;
 
 
 
-},{"./each":1,"./filter":2,"./map":5,"./parallel":6,"./thunk":7}],5:[function(require,module,exports){
+},{"./each":1,"./filter":2,"./map":5,"./parallel":6,"./series":7,"./thunk":8}],5:[function(require,module,exports){
 var map, once, thunk;
 
 once = require('./lib/once');
@@ -143,7 +146,7 @@ module.exports = map;
 
 
 
-},{"./lib/once":3,"./thunk":7}],6:[function(require,module,exports){
+},{"./lib/once":3,"./thunk":8}],6:[function(require,module,exports){
 var once, parallel, thunk;
 
 once = require('./lib/once');
@@ -174,7 +177,34 @@ module.exports = parallel;
 
 
 
-},{"./lib/once":3,"./thunk":7}],7:[function(require,module,exports){
+},{"./lib/once":3,"./thunk":8}],7:[function(require,module,exports){
+var once, series;
+
+once = require('./lib/once');
+
+series = function(functions, callback) {
+  var execSeries;
+  callback = once(callback);
+  execSeries = function(fn, functions, acc, callback) {
+    return fn(function(err, value) {
+      if (err) {
+        return callback(err);
+      }
+      acc.push(value);
+      if (!functions.length) {
+        return callback(null, acc);
+      }
+      return execSeries(functions[0], functions.slice(1), acc, callback);
+    });
+  };
+  return execSeries(functions[0], functions.slice(1), [], callback);
+};
+
+module.exports = series;
+
+
+
+},{"./lib/once":3}],8:[function(require,module,exports){
 var thunk,
   slice = [].slice;
 
