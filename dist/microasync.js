@@ -85,7 +85,7 @@ module.exports = once;
 
 
 },{}],4:[function(require,module,exports){
-var each, filter, map, microasync, parallel, series, thunk;
+var each, filter, map, microasync, parallel, series, thunk, waterfall;
 
 thunk = require('./thunk');
 
@@ -99,20 +99,23 @@ parallel = require('./parallel');
 
 series = require('./series');
 
+waterfall = require('./waterfall');
+
 microasync = {
   thunk: thunk,
   map: map,
   parallel: parallel,
   filter: filter,
   each: each,
-  series: series
+  series: series,
+  waterfall: waterfall
 };
 
 module.exports = microasync;
 
 
 
-},{"./each":1,"./filter":2,"./map":5,"./parallel":6,"./series":7,"./thunk":8}],5:[function(require,module,exports){
+},{"./each":1,"./filter":2,"./map":5,"./parallel":6,"./series":7,"./thunk":8,"./waterfall":9}],5:[function(require,module,exports){
 var map, once, thunk;
 
 once = require('./lib/once');
@@ -239,5 +242,39 @@ module.exports = thunk;
 
 
 
-},{}]},{},[4])(4)
+},{}],9:[function(require,module,exports){
+var once, waterfall,
+  slice = [].slice;
+
+once = require('./lib/once');
+
+waterfall = function(functions, callback) {
+  var waterfallRec;
+  callback = once(callback);
+  waterfallRec = function() {
+    var fn, functions, params, resolve;
+    fn = arguments[0], functions = arguments[1], params = 3 <= arguments.length ? slice.call(arguments, 2) : [];
+    params = params || [];
+    resolve = function() {
+      var err, response;
+      err = arguments[0], response = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+      if (err) {
+        return callback(err);
+      }
+      if (!functions.length) {
+        return callback.apply(null, [null].concat(slice.call(response)));
+      }
+      return waterfallRec.apply(null, [functions[0], functions.slice(1)].concat(slice.call(response)));
+    };
+    params.push(resolve);
+    return fn.apply(null, params);
+  };
+  return waterfallRec(functions[0], functions.slice(1));
+};
+
+module.exports = waterfall;
+
+
+
+},{"./lib/once":3}]},{},[4])(4)
 });

@@ -4,6 +4,7 @@ filter = require './filter'
 each = require './each'
 parallel = require './parallel'
 series = require './series'
+waterfall = require './waterfall'
 
 microasync =
   thunk: thunk
@@ -12,5 +13,6 @@ microasync =
   filter: filter
   each: each
   series: series
+  waterfall: waterfall
 
 module.exports = microasync
