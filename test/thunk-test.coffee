@@ -9,8 +9,8 @@ describe 'thunk', ->
     ajax300 = thunk(fakeAjax, 300)
 
     ajax100 (err, resp) ->
-      expect resp .to .be .equal 100
+      expect(resp) .to .be .equal 100
       ajax300 (err, resp) ->
-        expect resp .to .be .equal 300
+        expect(resp) .to .be .equal 300
         ajax200 (err, resp) ->
-          expect resp .to .be .equal 200
+          expect(resp) .to .be .equal 200
