@@ -1,19 +1,25 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.microasync = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var each, thunk;
+var each, once, thunk;
+
+once = require('./lib/once');
 
 thunk = require('./thunk');
 
 each = function(arr, fn, callback) {
-  var i, item, len, results;
+  var i, item, len, resolveCounter, results;
+  callback = once(callback);
+  resolveCounter = arr.length;
   results = [];
   for (i = 0, len = arr.length; i < len; i++) {
     item = arr[i];
     results.push(setTimeout(function(item) {
-      return thunk(fn, item)(function(err, response) {
+      return thunk(fn, item)(function(err) {
         if (err) {
           callback(err);
         }
-        return callback(null, response);
+        if (!--resolveCounter) {
+          return callback(null);
+        }
       }, 0);
     }));
   }
@@ -24,7 +30,7 @@ module.exports = each;
 
 
 
-},{"./thunk":8}],2:[function(require,module,exports){
+},{"./lib/once":3,"./thunk":8}],2:[function(require,module,exports){
 var filter, once, thunk;
 
 once = require('./lib/once');
