@@ -74,7 +74,7 @@ microasync.map(filesArr, function(file, callback) {
 ### filter(arr, function, [callback])
 
 Returns a new array of all valid elements in `arr`.
-The results in array will be in the same order as the original.
+The response in array will be in the same order as the original.
 
 __Arguments__
 
@@ -107,8 +107,8 @@ __Arguments__
 * `tasks` - An array containing functions to run, each function is passed
   a `callback(err, result)` it must call on completion with an error `err` (which can
   be `null`) and an optional `result` value.
-* `callback(err, results)` - Run once all the functions
-  have completed. This function gets a results array containing all
+* `callback(err, response)` - Run once all the functions
+  have completed. This function gets a response array containing all
   the result arguments passed to the `functions` callbacks.
 
 __Example__
@@ -141,7 +141,7 @@ function has completed.
 __Arguments__
 
 * `tasks` - An array containing functions to run.
-* `callback(err, results)` - Is executed once all the functions
+* `callback(err, response)` - Is executed once all the functions
   have completed successfully.
 
 __Example__
@@ -168,14 +168,14 @@ function(err, response){
 
 ### waterfall(tasks, [callback])
 
-Run the functions in `tasks` in series, each passing their results to the next function in
+Run the functions in `tasks` in series, each passing their response to the next function in
 the array.
 
 __Arguments__
 
 * `tasks` - An array of functions to run, each function is passed a
   `callback(err, result1, result2, ...)` it must call on completion.
-* `callback(err, [results])` - An callback to run once all the functions
+* `callback(err, [response])` - An callback to run once all the functions
   have completed.
 
 
