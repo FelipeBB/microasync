@@ -65,7 +65,7 @@ microasync.map(filesArr, function(file, callback) {
   fileContent =  ... open file ...
   callback(null, fileContent);
 }, function(err, response){
-  //response should be an array with all file contents
+  //response is an array with all file contents
 });
 ```
 
