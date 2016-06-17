@@ -36,7 +36,7 @@ __Examples__
 
 ```js
 var filesArr = ['file1', 'file2', 'file3'];
-microasync.each(filesArr, function(callback) {
+microasync.each(filesArr, function(file, callback) {
     //open the file and do something
     ...
 }, function(err){
