@@ -1,7 +1,7 @@
 {
   "name": "microasync",
-  "version": "0.1.0",
-  "description": "tiny async library",
+  "version": "1.0.1",
+  "description": "Tiny library designed to handle async problems",
   "main": "./dist/microasync.js",
   "directories": {
     "test": "test"
@@ -11,18 +11,19 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/FelipeBB/microasync"
   },
   "keywords": [
     "async",
+    "callback",
     "utility"
   ],
   "author": "Felipe Beline Baravieira",
   "license": "MIT",
   "bugs": {
-    "url": ""
+    "url": "https://github.com/FelipeBB/microasync/issues"
   },
-  "homepage": "",
+  "homepage": "https://github.com/FelipeBB/microasync",
   "devDependencies": {
     "chai": "^3.4.1",
     "grunt": "^0.4.5",
