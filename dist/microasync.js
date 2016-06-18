@@ -218,8 +218,9 @@ var thunk,
   slice = [].slice;
 
 thunk = function() {
-  var cb, error, fn, params, response;
+  var cb, error, fn, params, resolved, response;
   fn = arguments[0], params = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+  resolved = false;
   response = void 0;
   error = void 0;
   cb = void 0;
@@ -231,13 +232,14 @@ thunk = function() {
       return cb(null, value);
     }
     response = value;
-    return error = err;
+    error = err;
+    return resolved = true;
   }]));
   return function(callback) {
     if (error) {
       return callback(error);
     }
-    if (response) {
+    if (resolved) {
       callback(null, response);
     }
     return cb = callback;
