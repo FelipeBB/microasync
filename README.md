@@ -18,6 +18,38 @@ the minified file inside the _dist_ folder.
 
 ## Documentation
 
+### thunk(fn, arguments)([callback])
+
+Execute `fn` passing the `arguments` to it, the callback will only be triggered after the `fn` complete
+and you call the function that the thunk returns.
+
+__Arguments__
+
+* `fn` - Async function to be executed. The last param must be `callback(err, response)`.
+* `arguments` - arguments for `fn`.
+* `callback(err, response)` - callback with the actual result of `fn` response.
+
+__Examples___
+
+```js
+var file1 = thunk(fs.open, './file1');
+var file2 = thunk(fs.open, './file2');
+var file3 = thunk(fs.open, './file3');
+
+file2(function(err, response) {
+  if(err) return err;
+  // do something with file 2 response
+  file3(function(err, response) {
+    if(err) return err;
+    // do something with file 3 response
+    file1(function(err, response) {
+      if(err) return err;
+      //do someting with file 1 response
+    });
+  });
+});
+```
+
 <a name="each"></a>
 ### each(arr, function, [callback])
 
